@@ -1,6 +1,6 @@
 # 🌀 Blender Batch Render
 
-📘 This README is also available in [Ukrainian 🇺🇦](./README_UA.md)
+📘 This README is also available in [Ukrainian](./README_UA.md)
 
 **Blender Batch Render** is a desktop Python application with a GUI for batch rendering `.blend` files in Blender. It simplifies the workflow for 3D artists, animators, and tech artists who frequently work with multiple Blender projects.
 
