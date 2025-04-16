@@ -1,4 +1,4 @@
-# 🌀 Blender Batch Render
+# 🪶 Blender Batch Render
 
 📘 This README is also available in [Ukrainian](./README_UA.md)
 
