@@ -2,6 +2,9 @@
 
 **Blender Batch Render** is a desktop Python application with a GUI for batch rendering `.blend` files in Blender. It simplifies the workflow for 3D artists, animators, and tech artists who frequently work with multiple Blender projects.
 
+![Application Interface](https://github.com/user-attachments/assets/41134de2-52ec-4cee-9308-5a7e0bc299d1)
+
+
 ## 🔧 Problem It Solves
 
 Blender has no built-in support for rendering multiple `.blend` files sequentially. This app automates the process, tracks rendering progress per file, displays time spent, and lets you stop rendering at any moment.
