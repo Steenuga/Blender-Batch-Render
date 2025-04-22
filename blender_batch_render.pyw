@@ -32,6 +32,10 @@ class BlenderBatchRenderApp:
         self.total_frames = 0
         self.current_frame = 0
         
+        # Додаємо нові змінні для відстеження початкового та кінцевого кадрів
+        self.frame_start = 1
+        self.frame_end = 1
+        
         # Головний фрейм
         main_frame = ttk.Frame(root)
         main_frame.pack(fill=tk.BOTH, expand=True)
@@ -271,10 +275,10 @@ class BlenderBatchRenderApp:
                 frame_end = int(end_match.group(1))
                 
             total_frames = frame_end - frame_start + 1
-            return total_frames
+            return total_frames, frame_start, frame_end
         except Exception as e:
             self.log(f"Помилка при аналізі файлу: {e}")
-            return 1  # За замовчуванням повертаємо 1 кадр
+            return 1, 1, 1  # За замовчуванням повертаємо 1 кадр, початок 1, кінець 1
     
     def render_next_file(self):
         self.current_file_index += 1
@@ -301,9 +305,13 @@ class BlenderBatchRenderApp:
         
         # Аналізуємо файл для визначення кількості кадрів
         self.log(f"Аналіз кількості кадрів для файлу {os.path.basename(file_path)}...")
-        frames_count = self.analyze_blend_info(file_path)
+        frames_count, frame_start, frame_end = self.analyze_blend_info(file_path)
         self.total_frames = frames_count
         self.current_frame = 0
+        
+        # Зберігаємо інформацію про початковий і кінцевий кадри
+        self.frame_start = frame_start
+        self.frame_end = frame_end
         
         # Оновлюємо інформацію про кадри
         current_file[2] = frames_count
@@ -326,7 +334,7 @@ class BlenderBatchRenderApp:
         # Оновлення відображення
         self.current_file_var.set(f"Рендеринг: {os.path.basename(file_path)}")
         self.progress_var.set(0)
-        self.frame_var.set(f"Кадр: 0 / {frames_count}")
+        self.frame_var.set(f"Кадр: {frame_start} / {frame_end}")
         
         # Запуск Blender
         cmd = [self.blender_path, "-b", file_path, "-a"]
@@ -361,14 +369,15 @@ class BlenderBatchRenderApp:
                     frame_num = int(frame_match.group(1))
                     self.current_frame = frame_num
                     
-                    # Розрахунок прогресу
+                    # Розрахунок прогресу з урахуванням початкового кадру
                     if self.total_frames > 0:
-                        progress = min(100, (frame_num / self.total_frames) * 100)
+                        # Обчислюємо прогрес відносно діапазону кадрів
+                        progress = min(100, ((frame_num - self.frame_start + 1) / self.total_frames) * 100)
                         
                         # Оновлення інтерфейсу через основний потік GUI
                         def update_ui():
                             self.progress_var.set(progress)
-                            self.frame_var.set(f"Кадр: {frame_num} / {self.total_frames}")
+                            self.frame_var.set(f"Кадр: {frame_num} / {self.frame_end}")
                             
                             # Оновлення даних файлу
                             current_file[3] = frame_num
